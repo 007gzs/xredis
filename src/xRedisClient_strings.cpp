@@ -6,7 +6,7 @@
  * ----------------------------------------------------------------------------
  */
 
-#include "hiredis.h"
+#include "hiredis_ext.h"
 #include "xRedisClient.h"
 #include <sstream>
 

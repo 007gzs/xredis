@@ -12,6 +12,7 @@ LIBNAME=libxredis
 
 XREDIS_MAJOR=0
 XREDIS_MINOR=11
+HIREDIS_PATH=./3rdparty/hiredis
 
 # Fallback to gcc when $CC is not in $PATH.
 CC:=g++
@@ -69,18 +70,18 @@ static: $(STLIBNAME)
 
 # Binaries:
 xredis-example: examples/xredis-example.cpp $(STLIBNAME)
-	$(CC) -o examples/$@ $(REAL_CFLAGS) $(REAL_LDFLAGS) -I./src -L./ $< $(STLIBNAME) -lhiredis -lpthread
+	$(CC) -o examples/$@ $(REAL_CFLAGS) $(REAL_LDFLAGS) -I./src -I%(HIREDIS_PATH) -L./ $< $(STLIBNAME) -L$(HIREDIS_PATH) -lhiredis -lpthread
 
 examples: $(EXAMPLES)
 
 xredis-test: test/xredis-test.cpp $(STLIBNAME)
-	$(CC) -o test/$@ $(REAL_CFLAGS) $(REAL_LDFLAGS)  -I./src -L. $< $(STLIBNAME) -lhiredis -lpthread
+	$(CC) -o test/$@ $(REAL_CFLAGS) $(REAL_LDFLAGS)  -I./src -I$(HIREDIS_PATH) -L. $< $(STLIBNAME) -L$(HIREDIS_PATH) -lhiredis -lpthread
 
 test: xredis-test
 	./test/xredis-test
 
 %.o: %.cpp
-	$(CC) $(REAL_CFLAGS) -c $< -o $@
+	$(CC) $(REAL_CFLAGS) -I$(HIREDIS_PATH) -c $< -o $@
 
 clean:
 	rm -rf $(DYLIBNAME) $(STLIBNAME) $(TESTS) src/*.o examples/example* *.o test/*.o 
